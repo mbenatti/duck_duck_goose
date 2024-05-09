@@ -66,7 +66,7 @@ defmodule DuckDuckGoose.Nodes.Manager do
 
   @spec handle_info(:send_heartbeat, map()) :: {:noreply, map()}
   def handle_info(:send_heartbeat, state = %{type: :goose}) do
-    Logger.debug("Sending heartbeat...")
+#    Logger.debug("Sending heartbeat...")
     broadcast(:heartbeat, Node.self())
     new_timer = Process.send_after(self(), :send_heartbeat, 1000)
 
@@ -75,7 +75,7 @@ defmodule DuckDuckGoose.Nodes.Manager do
 
   @spec handle_info({:heartbeat, pid()}, map()) :: {:noreply, map()}
   def handle_info({:heartbeat, master}, state) do
-    Logger.debug("Received heartbeat from Goose: #{inspect(master)}")
+#    Logger.debug("Received heartbeat from Goose: #{inspect(master)}")
 
     if state.heartbeat_ref do
       Process.cancel_timer(state.heartbeat_ref)
@@ -89,11 +89,6 @@ defmodule DuckDuckGoose.Nodes.Manager do
     Logger.debug("New Goose: #{inspect(master)}")
 
     {:noreply, %{state | master: master}}
-  end
-
-  @spec handle_info({:update_type, atom()}, map()) :: {:noreply, map()}
-  def handle_info({:update_type, type}, state) do
-    {:noreply, %{state | type: type}}
   end
 
   @spec handle_info(:heartbeat_timeout, map()) :: {:noreply, map()}
